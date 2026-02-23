@@ -36,12 +36,12 @@ safe_link "$CONFIG_DIR/codex/rules/default.rules" ~/.codex/rules/default.rules
 # --- Gemini ---
 echo "Linking Gemini..."
 mkdir -p ~/.gemini
-safe_link "$CONFIG_DIR/gemini/GEMINI.md" ~/.gemini/GEMINI.md
-safe_link "$CONFIG_DIR/gemini/settings.json" ~/.gemini/settings.json
+# safe_link "$CONFIG_DIR/gemini/GEMINI.md" ~/.gemini/GEMINI.md
+# safe_link "$CONFIG_DIR/gemini/settings.json" ~/.gemini/settings.json
 
 # --- Antigravity ---
 echo "Linking Antigravity..."
 mkdir -p ~/.gemini/antigravity
-safe_link "$CONFIG_DIR/gemini/commandAllowlist.txt" ~/.gemini/antigravity/commandAllowlist.txt
+# safe_link "$CONFIG_DIR/gemini/commandAllowlist.txt" ~/.gemini/antigravity/commandAllowlist.txt
 
 echo "All symlinks have been safely created!"
