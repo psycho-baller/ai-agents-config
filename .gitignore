@@ -1,2 +1,3 @@
 shared_browser_context
 .DS_Store
+__pycache__

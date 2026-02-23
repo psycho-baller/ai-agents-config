@@ -24,8 +24,7 @@ def manage_letterly_subscription():
         
         try:
             # STEP 1: START TRIAL
-            print("
---- Phase 1: Starting 7-Day Free Trial ---")
+            print("\n--- Phase 1: Starting 7-Day Free Trial ---")
             print("Navigating to https://web.letterly.app ...")
             page.goto("https://web.letterly.app")
             
@@ -55,8 +54,8 @@ def manage_letterly_subscription():
             
             trial_btn = None
             for selector in trial_selectors:
-                if page.locator(selector).is_visible():
-                    trial_btn = page.locator(selector)
+                if page.locator(selector).first.is_visible():
+                    trial_btn = page.locator(selector).first
                     break
             
             if not trial_btn:
@@ -69,73 +68,95 @@ def manage_letterly_subscription():
             # Stripe Checkout
             print("Waiting for Stripe Checkout page...")
             try:
-                page.wait_for_url("**/checkout.stripe.com/**", timeout=15000)
-                print("On Stripe Checkout. Looking for 'Start trial' confirmation...")
-                checkout_btn = page.locator("button:has-text('Start trial')").or_(page.locator("button:has-text('Subscribe')"))
+                page.wait_for_url("**/checkout.stripe.com/**", timeout=25000)
+                print("On Stripe Checkout. Looking for 'Start trial' button...")
                 
-                if checkout_btn.is_visible():
-                    checkout_btn.click()
-                    print("Trial checkout confirmed.")
-                    page.wait_for_url("**/web.letterly.app/**", timeout=30000)
-                else:
-                    print("Checkout button not found. Please complete checkout manually. Press Enter when back on Letterly.")
-                    input()
+                # Precise selector using data-testid provided by user
+                # Using wait_for instead of is_visible to handle loading states
+                checkout_btn = page.locator("button[data-testid='hosted-payment-submit-button']").filter(has_text="Start trial")
+                
+                print("Waiting for button to become ready...")
+                checkout_btn.wait_for(state="visible", timeout=15000)
+                
+                print("Clicking 'Start trial' button...")
+                checkout_btn.click()
+                print("Trial checkout initiated. Waiting for redirect...")
+                page.wait_for_url("**/web.letterly.app/**", timeout=45000)
             except Exception as e:
-                print(f"Stripe Checkout check: {e}. Press Enter when back on Letterly dashboard.")
+                print(f"Stripe Checkout error: {e}")
+                print("Please complete checkout manually. Press Enter when back on Letterly dashboard.")
                 input()
 
             # STEP 2: CANCEL SUBSCRIPTION
-            print("
---- Phase 2: Canceling Subscription ---")
-            print("Navigating back to Settings...")
-            page.goto("https://web.letterly.app/settings")
+            print("\n--- Phase 2: Canceling Subscription ---")
+            print("Navigating to Dashboard...")
+            page.goto("https://web.letterly.app")
             
-            print("Looking for Stripe Billing Portal link...")
-            billing_selectors = [
-                "text=Manage Subscription",
-                "text=Billing",
-                "text=Manage billing",
-                "a:has-text('Subscription')",
-                "button:has-text('Subscription')"
+            # Explicitly click settings to ensure sidebar/menu is open
+            print("Opening Settings...")
+            settings_selectors = [
+                "text=Settings",
+                "button[aria-label='Settings']",
+                "a[href='/settings']"
             ]
             
-            billing_btn = None
-            for selector in billing_selectors:
-                if page.locator(selector).is_visible():
-                    billing_btn = page.locator(selector)
+            settings_btn = None
+            for selector in settings_selectors:
+                if page.locator(selector).first.is_visible():
+                    settings_btn = page.locator(selector).first
                     break
             
-            if not billing_btn:
-                print("Could not find Billing link automatically. Press Enter once you are on the Stripe Billing page.")
+            if settings_btn:
+                settings_btn.click()
+                print("Clicked Settings.")
+            else:
+                print("Navigating directly to settings URL...")
+                page.goto("https://web.letterly.app/settings")
+            
+            print("Looking for 'Manage Subscription' link...")
+            billing_selectors = [
+                "text=Manage Subscription",
+                "text=Manage billing",
+                "button:has-text('Subscription')",
+                "a:has-text('Subscription')"
+            ]
+            
+            billing_link = None
+            # Allow time for dynamic settings to load
+            page.wait_for_timeout(3000)
+            for selector in billing_selectors:
+                loc = page.locator(selector).first
+                if loc.is_visible():
+                    billing_link = loc
+                    break
+            
+            if not billing_link:
+                print("Could not find Billing link automatically. Complete manually on Stripe. Press Enter when done.")
                 input()
             else:
-                billing_btn.click()
-                print("Clicked Billing link. Waiting for Stripe Portal...")
+                billing_link.click()
+                print("Clicked link. Waiting for Stripe Portal...")
             
             # Stripe Billing Portal
             try:
-                page.wait_for_url("**/billing.stripe.com/**", timeout=20000)
+                page.wait_for_url("**/billing.stripe.com/**", timeout=25000)
                 print("On Stripe Billing Portal. Attempting cancellation...")
-                cancel_btn = page.locator("button:has-text('Cancel plan')")
-                if cancel_btn.is_visible():
-                    cancel_btn.click()
-                    print("Clicked 'Cancel plan'.")
-                    confirm_btn = page.locator("button:has-text('Cancel plan')").last
-                    if confirm_btn.is_visible():
-                        confirm_btn.click()
-                        print("Cancellation confirmed successfully!")
-                    else:
-                        print("Confirmation button not found. Complete manually and press Enter.")
-                        input()
-                else:
-                    print("'Cancel plan' button not found. Verify manually and press Enter.")
-                    input()
+                
+                cancel_btn = page.locator("button:has-text('Cancel plan')").first
+                cancel_btn.wait_for(state="visible", timeout=15000)
+                cancel_btn.click()
+                print("Clicked 'Cancel plan'.")
+                
+                # Confirm step
+                confirm_btn = page.locator("button[data-testid='cancel-button']").or_(page.locator("button:has-text('Cancel plan')").last)
+                confirm_btn.wait_for(state="visible", timeout=15000)
+                confirm_btn.click()
+                print("Cancellation confirmed successfully!")
             except Exception as e:
-                print(f"Stripe Portal navigation: {e}. Complete manually and press Enter.")
+                print(f"Stripe Portal error: {e}. Complete manually and press Enter.")
                 input()
 
-            print("
-SUCCESS! Trial started and Subscription canceled.")
+            print("\nSUCCESS! Trial started and Subscription canceled.")
             
         except Exception as e:
             print(f"An unexpected error occurred: {e}")
