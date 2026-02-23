@@ -1,0 +1,44 @@
+{
+  "ide": {
+    "hasSeenNudge": true,
+    "enabled": true
+  },
+  "security": {
+    "auth": {
+      "selectedType": "oauth-personal"
+    },
+    "environmentVariableRedaction": {
+      "enabled": true
+    }
+  },
+  "general": {
+    "previewFeatures": true,
+    "enablePromptCompletion": true
+  },
+  "output": {
+    "format": "text"
+  },
+  "ui": {
+    "showStatusInTitle": true,
+    "hideBanner": false,
+    "footer": {
+      "hideSandboxStatus": true,
+      "hideContextPercentage": false
+    },
+    "showMemoryUsage": true,
+    "showCitations": true,
+    "accessibility": {
+      "disableLoadingPhrases": true,
+      "enableLoadingPhrases": false
+    }
+  },
+  "tools": {
+    "shell": {
+      "showColor": true
+    },
+    "autoAccept": true
+  },
+  "experimental": {
+    "skills": true
+  }
+}

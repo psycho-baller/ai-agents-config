@@ -1,0 +1,143 @@
+# ported from claude-code permissions allowlist
+prefix_rule(
+    pattern=[
+        [
+            "cat",
+            "ls",
+            "find",
+            "which",
+            "head",
+            "tail",
+            "wc",
+            "file",
+            "stat",
+            "tree",
+            "pwd",
+            "echo",
+            "grep",
+            "rg",
+            "fd",
+            "basename",
+            "dirname",
+            "realpath",
+            "readlink",
+            "cd",
+            "printf",
+            "jq",
+            "yq",
+            "diff",
+            "sort",
+            "uniq",
+            "cut",
+            "tr",
+            "awk",
+            "env",
+            "printenv",
+            "whoami",
+            "hostname",
+            "date",
+            "uname",
+            "id",
+            "type",
+            "command",
+            "du",
+            "df",
+            "ps",
+            "pgrep",
+            "lsof",
+            "xattr",
+            "mdls",
+            "mdfind",
+            "sed",
+            "gh",
+            "curl",
+            "open",
+            "pbcopy",
+            "pbpaste",
+            "whereis",
+            "ag",
+            "mkdir",
+            "touch",
+            "cp",
+            "export",
+            "source",
+            "brew",
+        ],
+    ],
+    decision="allow",
+)
+
+prefix_rule(
+    pattern=[
+        "git",
+        [
+            "status",
+            "log",
+            "diff",
+            "show",
+            "branch",
+            "remote",
+            "tag",
+            "ls-files",
+            "ls-tree",
+            "cat-file",
+            "rev-parse",
+            "describe",
+            "blame",
+            "shortlog",
+            "add",
+            "commit",
+        ],
+    ],
+    decision="allow",
+)
+
+prefix_rule(pattern=["git", "stash", "list"], decision="allow")
+prefix_rule(pattern=["git", "config", "--get"], decision="allow")
+
+prefix_rule(
+    pattern=["npm", ["list", "ls", "view", "info", "outdated", "--version"]],
+    decision="allow",
+)
+
+prefix_rule(pattern=["bun", "--version"], decision="allow")
+prefix_rule(pattern=["node", "--version"], decision="allow")
+prefix_rule(pattern=["python", "--version"], decision="allow")
+prefix_rule(pattern=["python3", "--version"], decision="allow")
+prefix_rule(pattern=["uv", "--version"], decision="allow")
+prefix_rule(pattern=["uv", "pip", ["list", "show"]], decision="allow")
+prefix_rule(pattern=["cargo", ["--version", "tree"]], decision="allow")
+prefix_rule(pattern=["rustc", "--version"], decision="allow")
+prefix_rule(pattern=["go", ["version", "list"]], decision="allow")
+
+prefix_rule(pattern=["git", "add", "app/page.tsx"], decision="allow")
+prefix_rule(pattern=["git", "commit", "-m", "Remove unused main ref"], decision="allow")
+prefix_rule(pattern=["git", "commit", "-m", "Simplify duplicate padding classes"], decision="allow")
+prefix_rule(pattern=["git", "add", "app/investing/page.tsx"], decision="allow")
+prefix_rule(pattern=["git", "commit", "-m", "Remove duplicate padding breakpoints"], decision="allow")
+prefix_rule(pattern=["git", "commit", "-m", "Simplify tooltip list spacing"], decision="allow")
+prefix_rule(pattern=["git", "commit", "-m", "Inline paragraph spacing"], decision="allow")
+prefix_rule(pattern=["git", "add", "app/components/sections/LastVisitor.tsx"], decision="allow")
+prefix_rule(pattern=["git", "commit", "-m", "Inline loading text spacing"], decision="allow")
+prefix_rule(pattern=["git", "add", "app/blog/page.tsx", "app/blog/[slug]/page.tsx", "app/blog/tag/[tag]/page.tsx"], decision="allow")
+prefix_rule(pattern=["git", "commit", "-m", "Remove duplicate padding classes in blog pages"], decision="allow")
+prefix_rule(pattern=["git", "add", "app/components/sections/Header.tsx", "app/globals.css"], decision="allow")
+prefix_rule(pattern=["git", "commit", "-m", "Remove nav-link transition override"], decision="allow")
+prefix_rule(pattern=["git", "add", "app/globals.css", "app/components/sections/Header.tsx"], decision="allow")
+prefix_rule(pattern=["git", "commit", "-m", "Align blog nav transition with links"], decision="allow")
+prefix_rule(pattern=["git", "checkout"], decision="allow")
+prefix_rule(pattern=["git", "add", "-A"], decision="allow")
+prefix_rule(pattern=["git", "commit", "-m", "refactor: move claude code config into claude-code folder"], decision="allow")
+prefix_rule(pattern=["mv", "~/.codex/config.toml", "~/.codex/AGENTS.md", "~/.codex/instructions.md", "codex/"], decision="allow")
+prefix_rule(pattern=["git", "commit", "-m", "docs: add codex symlink instructions"], decision="allow")
+prefix_rule(pattern=["git", "add", "codex/rules/default.rules"], decision="allow")
+prefix_rule(pattern=["git", "commit", "-m", "docs: port claude instructions to codex agents"], decision="allow")
+prefix_rule(pattern=["git", "commit", "-m", "chore: expand codex rules allowlist"], decision="allow")
+prefix_rule(pattern=["git", "commit", "-m", "chore: update codex rules"], decision="allow")
+prefix_rule(pattern=["rm", "-f", "Package.swift"], decision="allow")
+prefix_rule(pattern=["rm", "-f", "scripts/install-hooks.sh"], decision="allow")
+prefix_rule(pattern=["git", "reset"], decision="allow")
+prefix_rule(pattern=["git", "add"], decision="allow")
+prefix_rule(pattern=["git", "commit"], decision="allow")
+prefix_rule(pattern=["git", "mv"], decision="allow")
+prefix_rule(pattern=["git", "rebase"], decision="allow")

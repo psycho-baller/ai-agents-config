@@ -1,0 +1,113 @@
+cat
+ls
+find
+which
+head
+tail
+wc
+file
+stat
+tree
+pwd
+echo
+grep
+rg
+fd
+basename
+dirname
+realpath
+readlink
+cd
+printf
+jq
+yq
+diff
+sort
+uniq
+cut
+tr
+awk
+env
+printenv
+whoami
+hostname
+date
+uname
+id
+type
+command
+du
+df
+ps
+pgrep
+lsof
+xattr
+mdls
+mdfind
+git
+git status
+git log
+git diff
+git show
+git branch
+git remote
+git tag
+git ls-files
+git ls-tree
+git cat-file
+git rev-parse
+git describe
+git blame
+git shortlog
+git add
+git commit
+git stash list
+git config --get
+git checkout
+git reset
+git mv
+git rebase
+npm
+npm list
+npm ls
+npm view
+npm info
+npm outdated
+npm --version
+bun
+bun --version
+node
+node --version
+python
+python --version
+python3
+python3 --version
+uv
+uv --version
+uv pip list
+uv pip show
+cargo
+cargo --version
+cargo tree
+rustc
+rustc --version
+go
+go version
+go list
+mv
+rm
+rm -f
+sed
+gh
+curl
+open
+pbcopy
+pbpaste
+whereis
+ag
+mkdir
+touch
+cp
+export
+source
+brew
