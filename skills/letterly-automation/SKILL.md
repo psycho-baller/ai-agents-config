@@ -1,5 +1,5 @@
 ---
-name: letterly_automation
+name: letterly-automation
 description: Comprehensive automation for Letterly transcriptions. This skill exports the latest CSV from Letterly, processes "magic" notes into Obsidian markdown with custom metadata, semantically links them using a vector database, and moves them to the final Transcriptions directory. Use when the user asks to "process new letterly transcriptions", "sync letterly", or "import magic notes from letterly".
 ---
 
@@ -9,10 +9,10 @@ This skill provides a complete workflow for importing and processing your voice 
 
 ## Workflow Summary
 
-1.  **Export:** Uses a Playwright browser agent to log in and download the latest CSV export from `web.letterly.app`.
-2.  **Process:** Extracts only notes marked as "magic" in the CSV, creates markdown files with custom frontmatter, and places them in `unprocessed/`.
-3.  **Link:** Analyzes the new notes and links them to existing vault content using the local semantic embedding database (`.nexus/cache.db`).
-4.  **Deliver:** Moves the final, linked notes to `My Outputs/Transcriptions/` and cleans up the temporary CSV.
+1. **Export:** Uses a Playwright browser agent to log in and download the latest CSV export from `web.letterly.app`.
+2. **Process:** Extracts only notes marked as "magic" in the CSV, creates markdown files with custom frontmatter, and places them in `unprocessed/`.
+3. **Link:** Analyzes the new notes and links them to existing vault content using the local semantic embedding database (`.nexus/cache.db`).
+4. **Deliver:** Moves the final, linked notes to `My Outputs/Transcriptions/` and cleans up the temporary CSV.
 
 ## Usage
 
