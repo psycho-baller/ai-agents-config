@@ -3,6 +3,18 @@ import time
 import sys
 from playwright.sync_api import sync_playwright
 
+def get_vault_root():
+    candidates = [
+        os.getcwd(),
+        "/Users/rami/Documents/life-os/Obsidian",
+        "/Users/rami/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian"
+    ]
+    for c in candidates:
+        # Check for the presence of the .nexus directory or cache.db
+        if os.path.exists(os.path.join(c, ".nexus/cache.db")):
+            return c
+    return os.getcwd()
+
 def export_letterly_data(vault_root):
     # Define paths
     skill_dir = os.path.dirname(os.path.abspath(__file__))
@@ -118,5 +130,5 @@ def export_letterly_data(vault_root):
             browser.close()
 
 if __name__ == "__main__":
-    v_root = sys.argv[1] if len(sys.argv) > 1 else os.getcwd()
+    v_root = sys.argv[1] if len(sys.argv) > 1 else get_vault_root()
     export_letterly_data(v_root)

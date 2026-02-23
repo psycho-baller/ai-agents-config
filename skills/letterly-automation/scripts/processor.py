@@ -4,6 +4,17 @@ import re
 import sys
 from datetime import datetime
 
+def get_vault_root():
+    candidates = [
+        os.getcwd(),
+        "/Users/rami/Documents/life-os/Obsidian",
+        "/Users/rami/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian"
+    ]
+    for c in candidates:
+        if os.path.exists(os.path.join(c, ".nexus/cache.db")):
+            return c
+    return os.getcwd()
+
 def sanitize_filename(name):
     """Removes characters that are illegal in file names."""
     sanitized = re.sub(r'[\/*?:"<>|]', "", name)
@@ -100,5 +111,5 @@ Created: {iso_date}
         print(f"Error deleting CSV: {e}")
 
 if __name__ == "__main__":
-    v_root = sys.argv[1] if len(sys.argv) > 1 else os.getcwd()
+    v_root = sys.argv[1] if len(sys.argv) > 1 else get_vault_root()
     process_letterly_csv(v_root)
