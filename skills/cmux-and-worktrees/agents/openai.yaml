@@ -1,4 +1,4 @@
 interface:
-  display_name: "CMX and Worktrees"
-  short_description: "Manage cmx worktrees for parallel coding"
-  default_prompt: "Use $cmux-and-worktrees to manage parallel worktrees and run the right cmx commands in this repo."
+  display_name: "CMUX and Worktrees"
+  short_description: "Manage cmux worktrees for parallel coding"
+  default_prompt: "Use $cmux-and-worktrees to manage parallel worktrees and run the right cmux commands in this repo."
