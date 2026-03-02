@@ -10,8 +10,8 @@ Run concurrent coding sessions safely by isolating each task in a git worktree.
 ## Non-Negotiable Command Rule
 
 - Use `cmux` for every command in this skill.
-- Do not substitute with `git worktree` in normal operation.
-- If `cmux` fails, check availability first with `type cmux`.
+- Do not substitute `git worktree` in normal operation.
+- If a `cmux` command fails, verify availability with `type cmux` first.
 
 ## Preflight
 
@@ -21,7 +21,7 @@ Run concurrent coding sessions safely by isolating each task in a git worktree.
 git rev-parse --is-inside-work-tree
 ```
 
-1. Verify `cmux` availability:
+1. Verify `cmux` is available:
 
 ```bash
 type cmux
@@ -39,7 +39,7 @@ rg -n '^\.worktrees/$' .gitignore || echo '.worktrees/' >> .gitignore
 cmux ls
 ```
 
-## Core Commands (cmux)
+## Core Commands
 
 - Create new isolated task: `cmux new <branch>`
 - Resume existing task: `cmux start <branch>`
@@ -52,37 +52,46 @@ cmux ls
 - Update tool: `cmux update`
 - Show version: `cmux version`
 
-## Standard Workflow (cmux)
+## Exact Workflows
 
-1. Start feature work:
+### Existing Branch -> Worktree
 
 ```bash
-cmux new feature-auth
+cd /path/to/repo
+cmux ls
+cmux start <existing-branch>
+cmux cd <existing-branch>
+bash .cmux/setup
 ```
 
-1. Start urgent fix in parallel:
+Example:
 
 ```bash
-cmux new fix-payments
+cmux start eng-1296-onboarding-v2-question-view-context-dedupe
+cmux cd eng-1296-onboarding-v2-question-view-context-dedupe
+bash .cmux/setup
 ```
 
-1. Merge and clean up bugfix:
+### New Branch + New Worktree
 
 ```bash
-cmux merge fix-payments --squash
-git commit -m "fix(payments): resolve checkout bug"
-cmux rm fix-payments
+cd /path/to/repo
+cmux new <new-branch>
+cmux cd <new-branch>
+bash .cmux/setup
 ```
 
-1. Resume feature:
+Example:
 
 ```bash
-cmux start feature-auth
+cmux new codex/pr1-onboarding-demographics-profile-report
+cmux cd codex/pr1-onboarding-demographics-profile-report
+bash .cmux/setup
 ```
 
 ## Setup Hook Workflow
 
-1. Generate a project-specific setup hook (if needed):
+1. Generate a project-specific setup hook:
 
 ```bash
 cmux init
@@ -94,17 +103,12 @@ cmux init
 cmux init --replace
 ```
 
-1. Run setup inside each worktree immediately after creation/resume:
+1. Commit `.cmux/setup` so future worktrees inherit setup automatically.
+2. Run setup after every `cmux new` and `cmux start`:
 
 ```bash
-bash "$(git rev-parse --show-toplevel)/.cmux/setup"
+bash .cmux/setup
 ```
-
-1. Setup expectations:
-
-- Reuses root dependencies (shared `node_modules`) instead of reinstalling per worktree.
-- Links env files into the worktree.
-- Prepares mobile workspace shims needed for Metro resolution.
 
 ## Branch and Path Behavior
 
@@ -125,11 +129,14 @@ bash "$(git rev-parse --show-toplevel)/.cmux/setup"
 ## Troubleshooting
 
 - `Not in a git repo`: move to repo root, then rerun.
-- `Worktree not found`: run `cmux ls`, then create/resume the correct one.
-- `Branch is already checked out`: run `cmux ls` and reuse the existing worktree path.
+- `Worktree not found`: run `cmux ls`, then choose correct branch or create with `cmux new <branch>`.
+- `Branch already checked out`: run `cmux ls` and use the existing worktree path.
 - Merge blocked by uncommitted changes: commit or stash inside the worktree, then retry.
 - Remove blocked by dirty tree: clean state first, or use `cmux rm --force` only with explicit confirmation.
-- Mobile dev server from worktree:
-  `cd apps/mobile && npm run dev -- --clear --host lan`
-- Expo Router shows "Welcome to Expo" unexpectedly:
-  kill stale `expo/metro` processes, restart from the target worktree with `--clear`, and reopen dev client.
+- Expo Router shows "Welcome to Expo" unexpectedly: kill stale `expo/metro` processes, restart from the target worktree with `--clear`, and reopen dev client.
+- Mobile dev from a worktree:
+
+```bash
+cd apps/mobile
+npm run dev -- --clear --host lan
+```
