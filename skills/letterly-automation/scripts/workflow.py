@@ -3,66 +3,56 @@ import shutil
 import subprocess
 import sys
 
-def get_vault_root():
-    candidates = [
-        os.getcwd(),
-        "/Users/rami/Documents/life-os/Obsidian",
-        "/Users/rami/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian"
-    ]
-    for c in candidates:
-        if os.path.exists(os.path.join(c, ".nexus/cache.db")):
-            return c
-    return os.getcwd()
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from utils.smart_connections import get_vault_root
+
 
 def run_workflow():
     vault_root = get_vault_root()
     print(f"Detected Vault Root: {vault_root}")
-    
+
     script_dir = os.path.dirname(os.path.abspath(__file__))
     python_exe = sys.executable
-    
+
     unprocessed_dir = os.path.join(vault_root, "unprocessed")
     if not os.path.exists(unprocessed_dir):
         os.makedirs(unprocessed_dir, exist_ok=True)
-        
+
     csv_files = [f for f in os.listdir(unprocessed_dir) if f.endswith(".csv") and f.startswith("Letterly-export")]
-    
+
     # 0. Export if needed
     if not csv_files:
-        print("--- Step 0: No CSV found. Running Exporter ---")
+        print("\n--- Step 0: No CSV found. Running Exporter ---")
         exporter_script = os.path.join(script_dir, "exporter.py")
         subprocess.run([python_exe, exporter_script, vault_root], cwd=vault_root)
 
     # 1. Process the CSV
-    print("
---- Step 1: Processing Letterly CSV ---")
+    print("\n--- Step 1: Processing Letterly CSV ---")
     processor_script = os.path.join(script_dir, "processor.py")
     subprocess.run([python_exe, processor_script, vault_root], cwd=vault_root)
 
-    # Identify files that were just created in unprocessed
+    # identify new .md files just created in unprocessed/
     new_files = [f for f in os.listdir(unprocessed_dir) if f.endswith(".md")]
-    
+
     if not new_files:
         print("No new magic notes found. Workflow complete.")
         return
 
-    # 2. Run Semantic Linker (The global one)
-    print("
---- Step 2: Running Semantic Linker ---")
-    # Point to the global linker skill
+    # vault-relative paths for wait_for_sc_indexing
+    new_vault_paths = [f"unprocessed/{f}" for f in new_files]
+
+    # 2. Run Semantic Linker
+    print("\n--- Step 2: Running Semantic Linker ---")
     global_linker = "/Users/rami/Documents/life-os/ai-agents-config/skills/obsidian-semantic-linker/scripts/link_notes.py"
-    
-    # We pass the vault root and the names of new files so the linker can wait for indexing
-    linker_cmd = [python_exe, global_linker, vault_root] + new_files
+    linker_cmd = [python_exe, global_linker, vault_root] + new_vault_paths
     subprocess.run(linker_cmd, cwd=vault_root)
 
     # 3. Move processed files to My Outputs/Transcriptions
-    print("
---- Step 3: Moving files to Transcriptions ---")
+    print("\n--- Step 3: Moving files to Transcriptions ---")
     dest_dir = os.path.join(vault_root, "My Outputs/Transcriptions")
     if not os.path.exists(dest_dir):
         os.makedirs(dest_dir, exist_ok=True)
-        
+
     moved_count = 0
     for filename in os.listdir(unprocessed_dir):
         if filename.endswith(".md"):
@@ -71,9 +61,9 @@ def run_workflow():
             shutil.move(src_path, dest_path)
             print(f"Moved: {filename}")
             moved_count += 1
-            
-    print(f"
-Workflow Complete. Moved {moved_count} files to {dest_dir}")
+
+    print(f"\nWorkflow Complete. Moved {moved_count} files to {dest_dir}")
+
 
 if __name__ == "__main__":
     run_workflow()
