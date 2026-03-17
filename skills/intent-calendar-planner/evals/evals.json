@@ -1,0 +1,23 @@
+{
+  "skill_name": "intent-calendar-planner",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Plan tomorrow for me. I want to make progress on Communication and Vocabulary, ship more of the voice day planning system, and handle one admin thing. Check my real context first, ask me only the missing questions, and then propose a patch for Actions without writing anything yet.",
+      "expected_output": "Loads Obsidian and calendar context, asks targeted clarifying questions for underspecified blocks, uses Eisenhower-aware prioritization, and proposes a patch for the Actions calendar without writing before approval.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "It is already midday and I need to replan the rest of today. Keep what already happened, inspect my existing Actions events, and patch only the afternoon and evening. I also think I should touch Content and Brand but I am not sure if it deserves a block today.",
+      "expected_output": "Treats the request as a same-day patch, preserves earlier blocks, inspects existing Actions events before editing them, decides whether Content and Brand merits time, and presents a clear diff before any write.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I only told you I want to do some random cleanup and answer messages today. Use my vault and current calendar to tell me if I am missing something more important, but only if you have strong evidence. Then turn the final plan into one major event per major task with subtasks in the description.",
+      "expected_output": "Uses active-project context and recent notes to surface high-confidence missed work if justified, challenges low-leverage filler only when warranted, and organizes the plan into major Actions events with step-by-step description content.",
+      "files": []
+    }
+  ]
+}
