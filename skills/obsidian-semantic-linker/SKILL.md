@@ -1,6 +1,6 @@
 ---
 name: obsidian-semantic-linker
-description: Semantically links notes in your Obsidian vault using a local vector database (.nexus/cache.db). It analyzes the content of notes, finds related ideas, and appends a "## Related Notes" section with wiki-links to similar notes. Use when asked to "link my notes", "find related notes", or "process semantic connections".
+description: Semantically links notes in your Obsidian vault using a local vector database (.smart-env/). It analyzes the content of notes, finds related ideas, and appends a "## Related Notes" section with wiki-links to similar notes. Use when asked to "link my notes", "find related notes", or "process semantic connections".
 ---
 
 # Obsidian Semantic Linker

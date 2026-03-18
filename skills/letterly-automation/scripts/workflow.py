@@ -6,13 +6,18 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils.smart_connections import get_vault_root
 
-
 def run_workflow():
     vault_root = get_vault_root()
     print(f"Detected Vault Root: {vault_root}")
 
-    script_dir = os.path.dirname(os.path.abspath(__file__))
+    # Use the shared python executable from the venv
     python_exe = sys.executable
+
+    # Define paths to sub-skills
+    skills_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    export_script = os.path.join(skills_dir, "letterly-export", "scripts", "export.py")
+    process_script = os.path.join(skills_dir, "letterly-process", "scripts", "process.py")
+    link_script = os.path.join(skills_dir, "obsidian-semantic-linker", "scripts", "link_notes.py")
 
     unprocessed_dir = os.path.join(vault_root, "unprocessed")
     if not os.path.exists(unprocessed_dir):
@@ -20,35 +25,30 @@ def run_workflow():
 
     csv_files = [f for f in os.listdir(unprocessed_dir) if f.endswith(".csv") and f.startswith("Letterly-export")]
 
-    # 0. Export if needed
+    # 1. Export if needed
     if not csv_files:
-        print("\n--- Step 0: No CSV found. Running Exporter ---")
-        exporter_script = os.path.join(script_dir, "exporter.py")
-        subprocess.run([python_exe, exporter_script, vault_root], cwd=vault_root)
+        print("\n--- Step 1: No CSV found. Running Export Sub-Skill ---")
+        subprocess.run([python_exe, export_script, vault_root], cwd=vault_root)
 
-    # 1. Process the CSV
-    print("\n--- Step 1: Processing Letterly CSV ---")
-    processor_script = os.path.join(script_dir, "processor.py")
-    subprocess.run([python_exe, processor_script, vault_root], cwd=vault_root)
+    # 2. Process
+    print("\n--- Step 2: Running Process Sub-Skill ---")
+    subprocess.run([python_exe, process_script, vault_root], cwd=vault_root)
 
-    # identify new .md files just created in unprocessed/
     new_files = [f for f in os.listdir(unprocessed_dir) if f.endswith(".md")]
-
     if not new_files:
-        print("No new magic notes found. Workflow complete.")
+        print("No new magic notes found in unprocessed/. Workflow complete.")
         return
 
-    # vault-relative paths for wait_for_sc_indexing
+    # vault-relative paths for indexing wait
     new_vault_paths = [f"unprocessed/{f}" for f in new_files]
 
-    # 2. Run Semantic Linker
-    print("\n--- Step 2: Running Semantic Linker ---")
-    global_linker = "/Users/rami/Documents/life-os/ai-agents-config/skills/obsidian-semantic-linker/scripts/link_notes.py"
-    linker_cmd = [python_exe, global_linker, vault_root] + new_vault_paths
+    # 3. Link
+    print("\n--- Step 3: Running Semantic Linker Sub-Skill ---")
+    linker_cmd = [python_exe, link_script, vault_root] + new_vault_paths
     subprocess.run(linker_cmd, cwd=vault_root)
 
-    # 3. Move processed files to My Outputs/Transcriptions
-    print("\n--- Step 3: Moving files to Transcriptions ---")
+    # 4. Deliver
+    print("\n--- Step 4: Moving files to Transcriptions ---")
     dest_dir = os.path.join(vault_root, "My Outputs/Transcriptions")
     if not os.path.exists(dest_dir):
         os.makedirs(dest_dir, exist_ok=True)
@@ -63,7 +63,6 @@ def run_workflow():
             moved_count += 1
 
     print(f"\nWorkflow Complete. Moved {moved_count} files to {dest_dir}")
-
 
 if __name__ == "__main__":
     run_workflow()

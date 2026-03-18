@@ -1,25 +1,24 @@
 import os
 import time
+import sys
 from playwright.sync_api import sync_playwright
 
-def export_letterly_data():
-    # Define paths
-    skill_dir = os.path.dirname(os.path.abspath(__file__))
-    user_data_dir = os.path.join(skill_dir, "chrome_context")
-    vault_dest_dir = os.path.abspath(os.path.join(os.getcwd(), "My Outputs/Transcriptions"))
+# Import centralized utils
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from utils.browser import get_shared_context_path, get_vault_root
 
-    # Ensure directories exist
-    os.makedirs(user_data_dir, exist_ok=True)
-    os.makedirs(vault_dest_dir, exist_ok=True)
+def export_letterly_data(vault_root):
+    # Use centralized browser context
+    user_data_dir = get_shared_context_path()
+    unprocessed_dir = os.path.join(vault_root, "unprocessed")
+    os.makedirs(unprocessed_dir, exist_ok=True)
 
-    print(f"Starting browser with persistent context at: {user_data_dir}")
+    print(f"Starting browser with CENTRALIZED context at: {user_data_dir}")
     
     with sync_playwright() as p:
-        # We use Playwright's bundled Chromium (installed via 'playwright install chromium')
-        # This is a standalone binary that won't interfere with your Arc, Brave, or Zen.
         browser = p.chromium.launch_persistent_context(
             user_data_dir=user_data_dir,
-            headless=False, # Must be False to allow manual login if needed
+            headless=False,
             accept_downloads=True
         )
         
@@ -27,19 +26,14 @@ def export_letterly_data():
         
         try:
             print("Navigating to https://web.letterly.app ...")
-            # Relaxed wait condition to prevent timeouts on background network activity
             page.goto("https://web.letterly.app")
             
-            # Check if redirected to login
             print("Checking login status...")
-            # We will wait up to 120 seconds for the user to log in manually
             max_wait = 120 
             start_time = time.time()
             logged_in = False
             
             while time.time() - start_time < max_wait:
-                # Check for dashboard indicators (Settings button)
-                # Settings selector from below
                 settings_selectors = [
                     "text=Settings",
                     "button[aria-label='Settings']",
@@ -59,7 +53,7 @@ def export_letterly_data():
                     break
                 
                 if "login" in page.url or page.locator("text=Sign in").count() > 0:
-                    print(f"Waiting for login... ({int(max_wait - (time.time() - start_time))}s remaining) - Please log in manually in the browser window.")
+                    print(f"Waiting for login... ({int(max_wait - (time.time() - start_time))}s remaining)")
                 else:
                     print(f"Waiting for dashboard... ({int(max_wait - (time.time() - start_time))}s remaining)")
                 
@@ -85,7 +79,6 @@ def export_letterly_data():
                 return
             
             print("Looking for 'Export Data'...")
-            # User says: "bottom of that sidebar is where we have export data"
             export_selectors = [
                 "text=Export Data",
                 "text=Export CSV",
@@ -99,10 +92,9 @@ def export_letterly_data():
                     break
             
             if not export_btn:
-                print("Could not find 'Export Data' button automatically. Please find it and press Enter when ready to click (or click it yourself).")
-                input()
+                print("Could not find 'Export Data' button automatically.")
+                return
             else:
-                 # Setup download listener before clicking
                 with page.expect_download() as download_info:
                     export_btn.click()
                     print("Clicked Export Data. Waiting for download...")
@@ -110,17 +102,15 @@ def export_letterly_data():
                 download = download_info.value
                 suggested_filename = download.suggested_filename
                 
-                # Move to Obsidian vault
-                final_path = os.path.join(vault_dest_dir, suggested_filename)
+                final_path = os.path.join(unprocessed_dir, suggested_filename)
                 
-                # Check if file exists, if so, append timestamp
                 if os.path.exists(final_path):
                     name, ext = os.path.splitext(suggested_filename)
                     timestamp = time.strftime("%Y%m%d-%H%M%S")
-                    final_path = os.path.join(vault_dest_dir, f"{name}_{timestamp}{ext}")
+                    final_path = os.path.join(unprocessed_dir, f"{name}_{timestamp}{ext}")
                 
                 download.save_as(final_path)
-                print(f"\nSUCCESS! File saved to: {final_path}")
+                print(f"\nSUCCESS! CSV saved to: {final_path}")
                 
         except Exception as e:
             print(f"An error occurred: {e}")
@@ -128,4 +118,5 @@ def export_letterly_data():
             browser.close()
 
 if __name__ == "__main__":
-    export_letterly_data()
+    v_root = sys.argv[1] if len(sys.argv) > 1 else get_vault_root()
+    export_letterly_data(v_root)
