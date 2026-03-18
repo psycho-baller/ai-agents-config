@@ -1,5 +1,6 @@
 ---
 name: letterly-process
+version: 1.0.0
 description: Reads the Letterly CSV export in the unprocessed folder, extracts "magic" notes, and converts them into Markdown notes with frontmatter.
 ---
 

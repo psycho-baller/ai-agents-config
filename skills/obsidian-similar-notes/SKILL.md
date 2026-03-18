@@ -1,5 +1,6 @@
 ---
 name: obsidian-similar-notes
+version: 1.0.0
 description: Finds notes semantically similar to a given file using Smart Connections embeddings. Supports both note-level and block-level (per-heading) similarity, so it can surface which specific section of a note relates to which other notes. Use when asked to "find notes similar to X", "what's related to this note", "show me similar notes", or "find connections for [file]".
 ---
 

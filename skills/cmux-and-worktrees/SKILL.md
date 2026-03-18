@@ -1,5 +1,6 @@
 ---
 name: cmux-and-worktrees
+version: 1.0.0
 description: Manage parallel development with cmux-style git worktrees in one repository. Use this skill whenever the user asks to run multiple agents in parallel, create or resume isolated worktrees, list/switch/merge/remove worktrees, set up `.cmux/setup`, or recover from worktree conflicts. Use `cmux` commands in this environment.
 ---
 

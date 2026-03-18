@@ -1,5 +1,6 @@
 ---
 name: letterly-export
+version: 1.0.0
 description: Automates the process of exporting your data from Letterly as a CSV file to your Obsidian vault's unprocessed directory. Used as the first step in the Letterly automation pipeline.
 ---
 
