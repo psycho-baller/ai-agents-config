@@ -1,6 +1,6 @@
 ---
 name: letterly-automation
-version: 1.0.0
+version: 1.0.1
 description: Comprehensive automation for Letterly transcriptions. This skill exports the latest CSV from Letterly, processes "magic" notes into Obsidian markdown with custom metadata, semantically links them using a vector database, and moves them to the final Transcriptions directory. Use when the user asks to "process new letterly transcriptions", "sync letterly", or "import magic notes from letterly".
 ---
 

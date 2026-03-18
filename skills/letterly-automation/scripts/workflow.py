@@ -10,14 +10,23 @@ def run_workflow():
     vault_root = get_vault_root()
     print(f"Detected Vault Root: {vault_root}")
 
-    # Use the shared python executable from the venv
-    python_exe = sys.executable
+    # Use a stable python version
+    python_exe = "python3.12"
 
     # Define paths to sub-skills
-    skills_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    # Sub-skills reside in ../ai-agents-config/skills
+    skills_dir = "/Users/rami/Documents/life-os/ai-agents-config/skills"
+    
     export_script = os.path.join(skills_dir, "letterly-export", "scripts", "export.py")
     process_script = os.path.join(skills_dir, "letterly-process", "scripts", "process.py")
     link_script = os.path.join(skills_dir, "obsidian-semantic-linker", "scripts", "link_notes.py")
+
+    # Ensure PYTHONPATH is set for sub-processes to find 'utils'
+    env = os.environ.copy()
+    root_dir = os.path.dirname(skills_dir) # .agents
+    # Actually 'utils' is in audio-processing/utils
+    project_root = os.path.dirname(root_dir)
+    env["PYTHONPATH"] = project_root + os.pathsep + env.get("PYTHONPATH", "")
 
     unprocessed_dir = os.path.join(vault_root, "unprocessed")
     if not os.path.exists(unprocessed_dir):
@@ -28,11 +37,11 @@ def run_workflow():
     # 1. Export if needed
     if not csv_files:
         print("\n--- Step 1: No CSV found. Running Export Sub-Skill ---")
-        subprocess.run([python_exe, export_script, vault_root], cwd=vault_root)
+        subprocess.run([python_exe, export_script, vault_root], cwd=vault_root, env=env)
 
     # 2. Process
     print("\n--- Step 2: Running Process Sub-Skill ---")
-    subprocess.run([python_exe, process_script, vault_root], cwd=vault_root)
+    subprocess.run([python_exe, process_script, vault_root], cwd=vault_root, env=env)
 
     new_files = [f for f in os.listdir(unprocessed_dir) if f.endswith(".md")]
     if not new_files:
@@ -45,7 +54,7 @@ def run_workflow():
     # 3. Link
     print("\n--- Step 3: Running Semantic Linker Sub-Skill ---")
     linker_cmd = [python_exe, link_script, vault_root] + new_vault_paths
-    subprocess.run(linker_cmd, cwd=vault_root)
+    subprocess.run(linker_cmd, cwd=vault_root, env=env)
 
     # 4. Deliver
     print("\n--- Step 4: Moving files to Transcriptions ---")

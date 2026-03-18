@@ -72,6 +72,13 @@ def export_letterly_data(vault_root):
                     break
             
             if settings_btn:
+                # Check for upgrade popup and close if present
+                upgrade_popup_close = page.locator("aside[data-state='open'] button:has-text('Close'), aside[data-state='open'] svg[data-icon='xmark']")
+                if upgrade_popup_close.first.is_visible():
+                    print("Closing upgrade popup...")
+                    upgrade_popup_close.first.click()
+                    time.sleep(1)
+
                 settings_btn.click()
                 print("Clicked Settings.")
             else:
@@ -95,9 +102,15 @@ def export_letterly_data(vault_root):
                 print("Could not find 'Export Data' button automatically.")
                 return
             else:
+                # Handle possible overlay intercepting click
                 with page.expect_download() as download_info:
-                    export_btn.click()
-                    print("Clicked Export Data. Waiting for download...")
+                    print("Attempting to click Export Data...")
+                    try:
+                        export_btn.click(timeout=10000)
+                    except:
+                        print("Regular click failed, trying force click...")
+                        export_btn.click(force=True)
+                    print("Waiting for download...")
                 
                 download = download_info.value
                 suggested_filename = download.suggested_filename
