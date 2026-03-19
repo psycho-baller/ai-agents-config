@@ -57,21 +57,36 @@ def run_workflow():
     subprocess.run(linker_cmd, cwd=vault_root, env=env)
 
     # 4. Deliver
-    print("\n--- Step 4: Moving files to Transcriptions ---")
+    print("\n--- Step 4: Moving linked files to Transcriptions ---")
     dest_dir = os.path.join(vault_root, "My Outputs/Transcriptions")
     if not os.path.exists(dest_dir):
         os.makedirs(dest_dir, exist_ok=True)
 
     moved_count = 0
+    skipped_count = 0
     for filename in os.listdir(unprocessed_dir):
         if filename.endswith(".md"):
             src_path = os.path.join(unprocessed_dir, filename)
-            dest_path = os.path.join(dest_dir, filename)
-            shutil.move(src_path, dest_path)
-            print(f"Moved: {filename}")
-            moved_count += 1
+            
+            # Read file to check for links
+            try:
+                with open(src_path, "r", encoding="utf-8") as f:
+                    content = f.read()
+                
+                if "## Related Notes" in content:
+                    dest_path = os.path.join(dest_dir, filename)
+                    shutil.move(src_path, dest_path)
+                    print(f"Moved linked note: {filename}")
+                    moved_count += 1
+                else:
+                    print(f"Skipped (no links yet): {filename}")
+                    skipped_count += 1
+            except Exception as e:
+                print(f"Error checking {filename}: {e}")
 
-    print(f"\nWorkflow Complete. Moved {moved_count} files to {dest_dir}")
+    print(f"\nWorkflow Summary:")
+    print(f"- Moved to Transcriptions: {moved_count}")
+    print(f"- Remaining in unprocessed (pending links): {skipped_count}")
 
 if __name__ == "__main__":
     run_workflow()
