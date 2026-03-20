@@ -1,0 +1,23 @@
+{
+  "skill_name": "speech-video-transcriber",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "transcribe /Users/rami/Documents/life-os/speech/founder-story-take-01.mov into markdown and save it to the shared transcriptions folder",
+      "expected_output": "a markdown transcript file in ai-agents-config/transcriptions with the source path, model metadata, and the full transcript text",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "make a transcript of /Users/rami/Documents/life-os/speech/camera-practice/clarity.mp4. the language is english and the prompt hint should include rami, chalant, and purpose os.",
+      "expected_output": "a markdown transcript file created via the script with language and jargon hints passed through to the transcription call",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "turn /Users/rami/Documents/life-os/speech/interviews/podcast-cut.mov into text using the accurate OpenAI model, but keep local compute low",
+      "expected_output": "the skill uses ffmpeg audio extraction plus gpt-4o-transcribe and writes a markdown transcript into ai-agents-config/transcriptions",
+      "files": []
+    }
+  ]
+}
