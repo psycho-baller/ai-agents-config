@@ -9,16 +9,19 @@ description: Transcribes a local video or audio file into a markdown transcript 
 turn a local media file into a markdown transcript with minimal local compute.
 
 the intended path is:
+
 - extract compact mono audio with `ffmpeg`
 - send that audio to OpenAI transcription
 - write a markdown transcript into `../transcriptions/` relative to the `skills/` directory
 
 for this repo, that means outputs land in:
+
 - `/Users/rami/Documents/life-os/ai-agents-config/transcriptions/`
 
 ## when to use it
 
 use this skill when the user wants any of the following from a local media file:
+
 - a transcript from a speaking video
 - a transcript from an audio file
 - a markdown transcript saved to disk for later analysis
@@ -44,6 +47,7 @@ uv pip install -r speech-video-transcriber/scripts/requirements.txt
 ```
 
 the machine also needs:
+
 - `ffmpeg`
 - `OPENAI_API_KEY`
 
@@ -77,6 +81,7 @@ uv run python speech-video-transcriber/scripts/transcribe_video.py \
 the script writes one markdown file to the shared transcriptions directory and prints the final path.
 
 the markdown includes:
+
 - source media path
 - generation timestamp
 - model used
@@ -118,7 +123,7 @@ uv run python speech-video-transcriber/scripts/transcribe_video.py \
 
 ## failure handling
 
-- if `OPENAI_API_KEY` is missing, stop and ask for it
+- if `OPENAI_API_KEY` is missing, try to run `source .env` to load it and if it still fails stop and ask for it
 - if `ffmpeg` is missing, stop and report that dependency clearly
 - if transcription fails on a chunk, surface the chunk number and the upstream error
 - do not paraphrase the transcript in place of the output file
