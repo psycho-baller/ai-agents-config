@@ -13,36 +13,46 @@ writes one master long-form piece per transcript. stays close to rami's original
 - requires `research.md` and `hooks.md` in `notes-processing/{filename}/`
 - output: `notes-processing/{filename}/content.md`
 
+## preprocessing
+
+before writing, clean the transcript:
+- strip YAML frontmatter (between `---` markers at the top)
+- convert wiki-links: `[[Note|display]]` → `display`, `[[Note]]` → `Note`
+- remove `## Related Notes` section and everything after it
+- write from clean text — the final piece should contain none of this syntax
+
 ## steps
 
-1. read: transcript, research.md, hooks.md
-2. pick the highest overall ICE-scored hook from hooks.md as the opening angle
+1. read: clean transcript, research.md, hooks.md
+2. pick the highest overall ICE-scored hook from hooks.md — this becomes the title and opening angle
 3. write the master piece (see rules below)
 4. write content.md
 
 ## writing rules
 
 **the transcript is sacred.**
-- start from rami's own words and structure - don't restructure his thinking
-- preserve his examples, his personal stories, his phrasing where it's strong
-- only modify what research improves: add a stat, correct a claim, deepen a point
+- follow the order and structure of rami's original thoughts — don't reorganize
+- preserve his examples, personal stories, and strong phrasing exactly
+- only touch what research improves: add a stat, reframe an overstatement, deepen a point
+- if a claim was fully invalidated in research.md, reframe it to the nuanced version — don't fabricate, don't cut his genuine experience
 
-**infuse research, don't paste it.**
-- weave validated evidence into the flow naturally - don't add a "research says" section
-- if a claim was invalidated in research.md, either reframe it or cut it
-- keep the voice - research context sounds like rami discovered it, not like a citation
+**infuse research, don't cite it.**
+- weave evidence into the flow naturally — no "research says" headers
+- research should feel like rami discovered these facts himself, not like a bibliography
+- one or two data points per piece is enough — don't over-reference
 
 **rami's voice (never break these):**
-- lowercase conversational, no corporate polish
-- one idea per line - spoken-word pacing, each line break is a beat
-- builds personal → universal: starts with his experience, ends at a principle for everyone
-- the closer is the sharpest line - not a summary, not a CTA - something that makes you stop
-- no hashtags, no emoji clusters, no leading questions as hooks
-- vulnerable but not soft: struggles are evidence for a point, not sympathy bait
-- names concepts when he can ("chalant", "freedom of emotion")
-- dry humor, self-deprecating without undermining the message
+- lowercase conversational — no corporate polish, no capitalization except names
+- one idea per line — spoken-word pacing, each line break is a beat
+- builds personal → universal: starts with his specific experience, ends at a principle anyone can use
+- the closer is the sharpest line — not a summary, not a CTA — something that makes you stop
+- no hashtags, no emoji clusters, no leading questions as opening hooks
+- vulnerable but not soft — struggles are evidence for a point, not sympathy bait
+- dry self-deprecating humor where it was in the original ("that's not good. that's not good at all.")
+- names concepts when the opportunity is natural ("chalant", "freedom of emotion")
+- do not add moral lessons or tidy conclusions rami didn't express himself
 
-**length:** as long as the content demands. no padding, no filler. cut anything that doesn't earn its place.
+**length:** as long as the content demands. no padding, no filler. short transcripts produce short pieces — that's fine.
 
 ## output format
 
@@ -53,5 +63,5 @@ writes one master long-form piece per transcript. stays close to rami's original
 
 ---
 *source: {original transcript path}*
-*hook used: {which hook was selected and its ICE score}*
+*hook used: {hook text} (ICE {score})*
 ```
