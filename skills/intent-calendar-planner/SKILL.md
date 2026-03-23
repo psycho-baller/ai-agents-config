@@ -1,7 +1,7 @@
 ---
 name: intent-calendar-planner
-version: 1.0.0
-description: "Plan Rami's day or tomorrow from conversation, Google Calendar, and Obsidian project context. Use this whenever the user wants to plan the day, schedule tasks, patch `Actions`, decide what to work on, prioritize competing work, or turn loose intentions into time blocks, even if they do not explicitly mention calendars."
+version: 1.0.1
+description: "Plan Rami's day or tomorrow from conversation, Google Calendar, and Obsidian project context. Use this whenever the user wants to plan the day, schedule tasks, or decide what to work on"
 metadata:
   openclaw:
     category: "productivity"

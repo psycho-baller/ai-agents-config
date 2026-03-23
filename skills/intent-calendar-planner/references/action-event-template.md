@@ -27,3 +27,16 @@ Planner marker: intent-calendar-planner
 - If the task comes from an active project, make that obvious.
 - If the block depends on something else happening first, say so.
 - If a task is exploratory, define the exploratory deliverable clearly.
+
+## Questions to ask the user
+
+- Why is this task important?
+- Why is it important RIGHT NOW to be completed? Why not tomorrow? Next month?
+  - That will help you figure out the broader picture.
+- What does this connect to in terms of your career, your health, your relationships? (or whatever your pillars of life are)
+  - This will help you sustain that motivation and keep you in alignment with your short and long-term goals
+- What really needs to be achieved?
+  - Narrow it down and define it in a very clear and tangible manner. That will help answer the next question
+- What is the easiest way to complete that task?
+  - You'll be surprised with how many shortcuts we can actually find if we just take a minute to think about it.
+- How can I make the completion of the task a little (or a lot) more fun?
