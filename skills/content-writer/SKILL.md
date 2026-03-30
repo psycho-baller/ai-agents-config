@@ -42,15 +42,16 @@ before writing, clean the transcript:
 - one or two data points per piece is enough — don't over-reference
 
 **rami's voice (never break these):**
-- lowercase conversational — no corporate polish, no capitalization except names
-- one idea per line — spoken-word pacing, each line break is a beat
+- lowercase conversational — no corporate polish, no capitalization except proper names
+- **normal prose paragraphs** — this is an article, not a poem. group related sentences into paragraphs of 2-5 sentences. do not put each sentence on its own line.
 - builds personal → universal: starts with his specific experience, ends at a principle anyone can use
 - the closer is the sharpest line — not a summary, not a CTA — something that makes you stop
 - no hashtags, no emoji clusters, no leading questions as opening hooks
 - vulnerable but not soft — struggles are evidence for a point, not sympathy bait
-- dry self-deprecating humor where it was in the original ("that's not good. that's not good at all.")
+- dry self-deprecating humor where it was in the original
 - names concepts when the opportunity is natural ("chalant", "freedom of emotion")
 - do not add moral lessons or tidy conclusions rami didn't express himself
+- keep paragraph breaks natural — break when the thought shifts, not after every sentence
 
 **length:** as long as the content demands. no padding, no filler. short transcripts produce short pieces — that's fine.
 
