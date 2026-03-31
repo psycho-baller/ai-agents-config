@@ -2,3 +2,5 @@ shared_browser_context
 .DS_Store
 __pycache__
 .env
+*.pyc
+__workspace__
