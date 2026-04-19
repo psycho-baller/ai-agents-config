@@ -10,6 +10,7 @@ from pathlib import Path
 
 MAX_UPLOAD_BYTES = 24 * 1024 * 1024
 DEFAULT_MODEL = "gpt-4o-transcribe"
+DEFAULT_LOCAL_MODEL = "small"
 FALLBACK_CHUNK_SECONDS = 20 * 60
 
 
@@ -25,7 +26,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--model",
         default=DEFAULT_MODEL,
-        help=f"OpenAI transcription model to use. default: {DEFAULT_MODEL}",
+        help=f"OpenAI transcription model (cloud) or whisper model name (local). default: {DEFAULT_MODEL}",
     )
     parser.add_argument(
         "--language",
@@ -33,7 +34,12 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--prompt",
-        help="optional short hint with names or jargon to improve recognition",
+        help="optional short hint with names or jargon to improve recognition (cloud only)",
+    )
+    parser.add_argument(
+        "--local",
+        action="store_true",
+        help=f"use local openai-whisper instead of the OpenAI API. default model: {DEFAULT_LOCAL_MODEL}",
     )
     return parser.parse_args()
 
@@ -212,6 +218,38 @@ def extract_audio_chunks(media_path: Path, temp_dir: Path) -> list[Path]:
     return chunk_paths
 
 
+# -- local whisper --
+
+def transcribe_local(
+    media_path: Path,
+    model_name: str,
+    language: str | None,
+) -> str:
+    try:
+        import whisper
+    except ImportError:
+        fail(
+            "python dependency missing: openai-whisper. run "
+            "'uv pip install -r speech-video-transcriber/scripts/requirements.txt'"
+        )
+
+    print(f"loading local whisper model: {model_name}", file=sys.stderr)
+    model = whisper.load_model(model_name)
+
+    kwargs: dict = {}
+    if language:
+        kwargs["language"] = language
+
+    print("transcribing...", file=sys.stderr)
+    result = model.transcribe(str(media_path), **kwargs)
+    text = result.get("text", "")
+    if not text:
+        fail("local whisper returned no text")
+    return text.strip()
+
+
+# -- cloud openai --
+
 def create_client():
     api_key = os.environ.get("OPENAI_API_KEY")
     if not api_key:
@@ -265,6 +303,8 @@ def transcribe_chunks(
     return "\n\n".join(part for part in transcripts if part)
 
 
+# -- output --
+
 def format_duration(duration_seconds: float | None) -> str | None:
     if duration_seconds is None:
         return None
@@ -282,15 +322,18 @@ def build_markdown(
     language: str | None,
     chunk_count: int,
     duration_seconds: float | None,
+    local: bool,
 ) -> str:
     generated_at = datetime.now(timezone.utc).isoformat()
     duration_text = format_duration(duration_seconds)
+    backend = "local-whisper" if local else "openai-api"
 
     frontmatter = [
         "---",
         f'source_media: "{media_path}"',
         f'generated_at: "{generated_at}"',
         f'transcription_model: "{model}"',
+        f'transcription_backend: "{backend}"',
         f"chunk_count: {chunk_count}",
     ]
     if language:
@@ -304,7 +347,7 @@ def build_markdown(
         "",
         f"source media: `{media_path}`",
         f"generated at: `{generated_at}`",
-        f"model: `{model}`",
+        f"model: `{model}` ({backend})",
         f"chunks: `{chunk_count}`",
     ]
     if language:
@@ -335,23 +378,36 @@ def main() -> None:
     output_path = resolve_output_path(args.output, media_path, workspace_root)
     duration_seconds = get_media_duration_seconds(media_path)
 
-    with tempfile.TemporaryDirectory(prefix="speech-transcribe-") as temp_dir_name:
-        temp_dir = Path(temp_dir_name)
-        chunk_paths = extract_audio_chunks(media_path, temp_dir)
-        transcript_text = transcribe_chunks(
-            chunk_paths=chunk_paths,
-            model=args.model,
+    if args.local:
+        model_name = args.model if args.model != DEFAULT_MODEL else DEFAULT_LOCAL_MODEL
+        transcript_text = transcribe_local(
+            media_path=media_path,
+            model_name=model_name,
             language=args.language,
-            prompt=args.prompt,
         )
+        chunk_count = 1
+    else:
+        with tempfile.TemporaryDirectory(prefix="speech-transcribe-") as temp_dir_name:
+            temp_dir = Path(temp_dir_name)
+            chunk_paths = extract_audio_chunks(media_path, temp_dir)
+            transcript_text = transcribe_chunks(
+                chunk_paths=chunk_paths,
+                model=args.model,
+                language=args.language,
+                prompt=args.prompt,
+            )
+        chunk_count = len(chunk_paths)
+
+    model_label = (args.model if args.model != DEFAULT_MODEL else DEFAULT_LOCAL_MODEL) if args.local else args.model
 
     markdown = build_markdown(
         media_path=media_path,
         transcript_text=transcript_text,
-        model=args.model,
+        model=model_label,
         language=args.language,
-        chunk_count=len(chunk_paths),
+        chunk_count=chunk_count,
         duration_seconds=duration_seconds,
+        local=args.local,
     )
     output_path.write_text(markdown, encoding="utf-8")
     print(output_path)

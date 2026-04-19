@@ -1,7 +1,7 @@
 ---
 name: speech-video-transcriber
-version: 0.1.0
-description: Transcribes a local video or audio file into a markdown transcript using low-local-compute preprocessing and OpenAI speech-to-text. Use this whenever the user wants a transcript from a camera take, speech practice video, loom, interview, podcast clip, or voice note, even if they only say "turn this video into text" or "make a transcript".
+version: 0.2.0
+description: Transcribes a local video or audio file into a markdown transcript. Supports two backends - local openai-whisper (no API key, uses ~/.cache/whisper/small.pt) and OpenAI cloud API (gpt-4o-transcribe). Use this whenever the user wants a transcript from a camera take, speech practice video, loom, interview, podcast clip, or voice note, even if they only say "turn this video into text" or "make a transcript". Use --local when the user asks for offline/local transcription or mentions whisper.
 ---
 
 # speech-video-transcriber
@@ -29,14 +29,24 @@ use this skill when the user wants any of the following from a local media file:
 
 if the user asks for speaking feedback but no transcript exists yet, use this skill first so later steps can work from a clean markdown source.
 
+## backends
+
+**local (default when user mentions whisper or offline):**
+- flag: `--local`
+- model: `small` (uses `~/.cache/whisper/small.pt` — no download needed if already cached)
+- no API key required
+- whisper handles audio internally, no chunking needed
+
+**cloud (default otherwise):**
+- model: `gpt-4o-transcribe`
+- requires `OPENAI_API_KEY`
+- auto-chunks audio if file exceeds 24 MB upload limit
+- only switch to `gpt-4o-mini-transcribe` if the user explicitly wants the cheaper model
+
 ## defaults
 
-- default model: `gpt-4o-transcribe`
 - default output folder: `ai-agents-config/transcriptions/`
 - default preprocessing: mono mp3 at 16 kHz and 48 kbps
-- default behavior: if the compressed audio is still too large, split it into upload-safe chunks automatically
-
-choose `gpt-4o-transcribe` by default because accuracy matters more here than shaving the last bit of API cost. only switch to `gpt-4o-mini-transcribe` if the user explicitly wants the cheaper model.
 
 ## required setup
 
@@ -61,6 +71,13 @@ the machine also needs:
 
 ## command
 
+**local (no API key):**
+```bash
+cd /Users/rami/Documents/life-os/ai-agents-config/skills
+uv run python speech-video-transcriber/scripts/transcribe_video.py "/absolute/path/to/video.mov" --local
+```
+
+**cloud (OpenAI API):**
 ```bash
 cd /Users/rami/Documents/life-os/ai-agents-config/skills
 uv run python speech-video-transcriber/scripts/transcribe_video.py "/absolute/path/to/video.mov"
@@ -69,11 +86,24 @@ uv run python speech-video-transcriber/scripts/transcribe_video.py "/absolute/pa
 common options:
 
 ```bash
+# local with language hint
+uv run python speech-video-transcriber/scripts/transcribe_video.py \
+  "/absolute/path/to/video.mov" \
+  --local \
+  --language en
+
+# cloud with jargon hint
 uv run python speech-video-transcriber/scripts/transcribe_video.py \
   "/absolute/path/to/video.mov" \
   --language en \
   --prompt "rami, chalant, purpose os, posthog" \
   --model gpt-4o-transcribe
+
+# save to specific path
+uv run python speech-video-transcriber/scripts/transcribe_video.py \
+  "/absolute/path/to/video.mov" \
+  --local \
+  --output "/path/to/output.md"
 ```
 
 ## output contract
