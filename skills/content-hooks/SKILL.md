@@ -13,6 +13,19 @@ generates distribution assets for every medium from a transcript and its researc
 - `research.md` must already exist at `notes-processing/{filename}/research.md`
 - output: `notes-processing/{filename}/hooks.md`
 
+## voice
+
+all copy must sound like rami. read `/Users/rami/Documents/life-os/ai-agents-config/skills/rami-voice/SKILL.md` for the full rules. critical rules that apply to every hook and tweet you write:
+
+- **no em dashes** — use a comma, colon, parentheses, or a new sentence instead
+- **no semicolons**
+- **no hedging qualifiers**: "it's worth noting", "one could argue", "it's interesting that"
+- **no corporate vocabulary**: leverage (as verb), utilize, implement, unpack, delve, game-changing
+- **no summary conclusions** — every closer should be a charge or a sharp stop, never a recap
+- **no formal transitions**
+- lowercase, no hashtags, no engagement bait ("drop it in the comments", "have you ever...")
+- takes a side — observation is not enough, a take is required
+
 ## preprocessing
 
 clean the transcript before using it:
