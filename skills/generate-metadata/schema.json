@@ -1,0 +1,40 @@
+{
+  "version": "1.0",
+  "allowed_note_types": [
+    "self_reflection",
+    "problem_solving",
+    "emotional_processing",
+    "communication_analysis",
+    "relationship_family",
+    "product_entrepreneurship",
+    "content_idea",
+    "task_planning",
+    "career_work",
+    "life_philosophy"
+  ],
+  "required_fields": [
+    "metadata_schema_version",
+    "metadata_generated_at",
+    "note_types",
+    "summary"
+  ],
+  "string_fields": [
+    "metadata_schema_version",
+    "metadata_generated_at",
+    "summary"
+  ],
+  "list_fields": [
+    "note_types",
+    "core_themes",
+    "practical_takeaways",
+    "communication_flaws",
+    "relationship_patterns",
+    "identity_beliefs",
+    "recurring_fears",
+    "decision_principles",
+    "open_problems",
+    "experiments_to_run",
+    "people_mentioned",
+    "projects_mentioned"
+  ]
+}
