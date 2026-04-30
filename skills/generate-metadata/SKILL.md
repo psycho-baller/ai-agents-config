@@ -48,6 +48,19 @@ The script manages these top-level frontmatter fields:
 
 Use strings and lists of strings only. Do not generate nested objects.
 
+Only field names and `note_types` use snake_case. Every other metadata value must be natural language that makes sense when read by a human in Obsidian.
+
+Do not write tag-slugs as metadata values. Values like `fear_of_missing_the_one`, `getting_too_far_ahead_in_your_head`, `instant_attachment`, or `overprojecting_future_family_onto_someone_unknown` are bad because they are annoying to read and do not match how Rami thinks.
+
+Write readable phrases instead:
+
+- `fear of missing the one`
+- `getting too far ahead in your head`
+- `instant attachment`
+- `overprojecting a future family onto someone unknown`
+
+If a value would look stupid in a sentence or in Obsidian Properties, rewrite it as a phrase.
+
 ## Allowed Note Types
 
 Read the current allowed values from `schema.json` when unsure. Current values:
@@ -109,13 +122,13 @@ Weak:
 
 `communication_flaws`
 
-Use blunt direct phrases when the note reveals a communication issue. Examples:
+Use blunt readable phrases when the note reveals a communication issue. Examples:
 
 - `overexplaining`
-- `approval_seeking`
-- `avoiding_direct_conflict`
-- `delayed_response`
-- `performing_confidence_instead_of_being_clear`
+- `approval seeking`
+- `avoiding direct conflict`
+- `delayed response`
+- `performing confidence instead of being clear`
 
 `relationship_patterns`
 
@@ -127,13 +140,13 @@ Capture beliefs Rami expresses about himself, his role, his purpose, his limitat
 
 `recurring_fears`
 
-Use direct phrases for fears and anxieties. Examples:
+Use readable phrases for fears and anxieties. Examples:
 
-- `fear_of_rejection`
-- `fear_of_losing_control`
-- `fear_of_wasting_potential`
-- `fear_of_being_misunderstood`
-- `fear_that_opportunities_will_disappear`
+- `fear of rejection`
+- `fear of losing control`
+- `fear of wasting potential`
+- `fear of being misunderstood`
+- `fear that opportunities will disappear`
 
 `decision_principles`
 
@@ -177,6 +190,7 @@ Weak:
 6. Run the bundled script to merge metadata into frontmatter.
 7. Run validation after applying metadata.
 8. Report which files passed and which failed.
+9. Treat the JSON payload as a temporary handoff file; do not store it beside the note or in the vault unless the user explicitly asks for debugging output.
 
 For one file:
 
@@ -215,15 +229,15 @@ Single-file payload:
     "Test [[Audora]] with one narrow pre-meeting use case before exploring mid-meeting feedback."
   ],
   "communication_flaws": [
-    "fear_of_losing_control_mid_conversation",
-    "overexplaining_when_self_concept_feels_unclear"
+    "fear of losing control mid-conversation",
+    "overexplaining when your self-concept feels unclear"
   ],
   "relationship_patterns": [],
   "identity_beliefs": [
     "I communicate best when I feel in control of how I explain myself and my work."
   ],
   "recurring_fears": [
-    "fear_of_becoming_my_old_self_in_high_pressure_conversations"
+    "fear of becoming your old self in high-pressure conversations"
   ],
   "decision_principles": [
     "Start with the smallest product test that proves the emotional behavior."
@@ -267,6 +281,8 @@ Batch payload:
 ```
 
 The script fills `metadata_schema_version` and `metadata_generated_at`; the agent does not need to provide them.
+
+The markdown frontmatter is the source of truth after a successful merge. The JSON payload is only an intermediate file for the script.
 
 ## Failure Behavior
 
