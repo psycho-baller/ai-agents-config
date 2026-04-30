@@ -36,16 +36,19 @@ def append_related_notes(filepath, links):
         return False
 
 
-def process_files(embeddings, vault_root, target_dir="unprocessed"):
+def process_files(embeddings, vault_root, target_dir="unprocessed", target_paths=None):
     """Find and link notes in target_dir against the full embedding index."""
     print(f"Loaded {len(embeddings)} embeddings. Linking notes in '{target_dir}'...")
 
     # normalize all vectors once
     normed = {path: normalize(vec) for path, vec in embeddings.items()}
+    target_set = set(target_paths or [])
 
     updates = 0
     for current_path, current_vec in normed.items():
-        if not current_path.startswith(target_dir):
+        if target_set and current_path not in target_set:
+            continue
+        if not target_set and not current_path.startswith(target_dir):
             continue
 
         full_path = os.path.join(vault_root, current_path)
@@ -86,7 +89,7 @@ def main(vault_root, wait_for_files=None):
         print(f"Error: {e}")
         return
 
-    count = process_files(embeddings, vault_root)
+    count = process_files(embeddings, vault_root, target_paths=wait_for_files)
     print(f"Finished. Updated {count} file(s).")
 
 
