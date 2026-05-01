@@ -10,6 +10,8 @@ Use this skill to turn markdown notes into personal principles Rami can actually
 
 The output is not motivational advice. A useful principle is a reusable decision rule backed by evidence from Rami's own notes.
 
+This skill creates a principles report. It does not update note frontmatter and it does not maintain the recurring pattern files. Use `generate-metadata` for per-note metadata and `update-patterns` for living pattern files.
+
 The agent owns judgment. The script owns structure.
 
 - The agent reads the note or notes and decides which principles are real.
@@ -25,6 +27,8 @@ For each target file or batch, produce a markdown report that answers:
 - What evidence from the source notes supports each principle?
 - How should each principle become a behavior system using Atomic Habits?
 - Which principles are strong enough to adopt now and which are only candidates?
+
+The report should help Rami decide how to behave differently. If the output only describes what the notes said, the skill failed.
 
 Default to writing the report into scratch space, for example:
 
@@ -47,6 +51,8 @@ Good principles are:
 - reusable across future situations
 - blunt about the failure mode they are correcting
 - paired with a habit system so they can be practiced
+
+Do not extract every takeaway as a principle. A takeaway becomes a principle only when it can guide future behavior in repeated situations.
 
 Weak principles sound like slogans:
 
@@ -83,6 +89,8 @@ When notes have `generate-metadata` frontmatter, use these fields as high-signal
 - `projects_mentioned`
 
 Still read the body. Frontmatter is a map; the note body contains the real evidence, wording, and emotional texture.
+
+If metadata and body disagree, trust the body and mention the tension in the reasoning.
 
 ## Status Values
 
@@ -146,7 +154,26 @@ Each principle needs a behavior system:
 - `friction_to_reduce`: What to remove so the good behavior is easier.
 - `friction_to_add`: What to make harder so the old failure mode is less automatic.
 
+Map the system to the practical habit laws:
+
+- make it obvious through the cue and environment design
+- make it attractive through the craving and identity
+- make it easy through the response and friction reduction
+- make it satisfying through the reward and review loop
+
 If a field feels generic, make it smaller and more concrete.
+
+## Quality Gate
+
+Before writing the payload, check every principle:
+
+- Does it follow `When [trigger], I will [behavior], because [reason]`?
+- Does it cite at least one source note?
+- Does it name the failure mode it prevents?
+- Does it include a behavior small enough to practice this week?
+- Does it avoid generic advice that could apply to anyone?
+
+If a principle fails these checks, rewrite it, lower its score, or leave it out.
 
 ## Evidence Rules
 

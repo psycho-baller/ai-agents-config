@@ -10,6 +10,8 @@ Use this skill to maintain living pattern files from notes that already have `ge
 
 The goal is not to summarize each note again. The goal is to accumulate cross-note intelligence so Rami can see repeated problems, beliefs, fears, principles, people, and projects over time.
 
+This skill updates pattern files. It does not generate per-note metadata and it does not produce Atomic Habits principle reports. Use `generate-metadata` before this skill and `generate-principles` when the user asks for principles to live by.
+
 The agent owns judgment. The script owns structure.
 
 - The agent reads metadata and decides whether a value belongs in an existing pattern or a new entry.
@@ -67,6 +69,15 @@ For each input note:
 
 Do not create fake patterns from empty metadata fields.
 
+Do not blindly create one pattern entry per metadata value. The agent should cluster related metadata values into the smallest useful set of recurring patterns while preserving meaningful distinctions.
+
+The skill is doing second-order synthesis:
+
+- first-order: a note says `fear of missing the one`
+- second-order: several notes reveal `scarcity thinking around rare romantic opportunities`
+
+Prefer the second-order pattern when multiple notes point to the same underlying loop.
+
 ## Entry Standard
 
 Each pattern entry should include:
@@ -96,6 +107,16 @@ If a block with the same `pattern-id` already exists, the script replaces that m
 If no matching block exists, the script appends a new block.
 
 Anything outside managed pattern blocks should be preserved.
+
+Merge when two entries describe the same loop in different words:
+
+- `turning uncertainty into fantasy`
+- `projecting a future before enough facts exist`
+
+Keep separate when the trigger, consequence, or action is different:
+
+- `approval seeking in social situations`
+- `overexplaining when trying to sound competent`
 
 ## Execution Protocol
 
@@ -175,3 +196,12 @@ Bad:
 - `interesting pattern`
 
 If the wording would look stupid as an Obsidian heading, rewrite it.
+
+## Source Link Rules
+
+Use wiki-links that make the source note easy to recognize later. Prefer the note title without the `.md` extension:
+
+- `[[Crush on Lebanese Girl and Unhealthy Expectations]]`
+- `[[Sense of control determines communication performance]]`
+
+If a metadata value already contains a useful wiki-link, preserve it. If a concept clearly deserves a note but does not exist yet, it is acceptable to create the wiki-link anyway.
