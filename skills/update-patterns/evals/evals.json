@@ -1,0 +1,32 @@
+{
+  "skill_name": "update-patterns",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Update my pattern files from these metadata-enriched transcriptions. Put the pattern notes in ../scratch/update-patterns/",
+      "expected_output": "Pattern markdown files are created or updated with managed blocks, source notes, evidence, summaries, why-it-matters lines, and actions.",
+      "files": [
+        "../scratch/generate-metadata/Crush on Lebanese Girl and Unhealthy Expectations.md",
+        "../scratch/generate-metadata/Sense of control determines communication performance.md"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Take these productivity notes and update the recurring patterns, open problems, and experiments files.",
+      "expected_output": "Relevant pattern files are updated using generated metadata, with similar entries merged and distinct entries kept separate.",
+      "files": [
+        "../scratch/generate-metadata/Overwhelmed by Task Management and Prioritization.md",
+        "../scratch/generate-metadata/Daily Reflections on Productivity and Intentionality.md"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Use the generated metadata from these notes to update People Mentioned and Projects Mentioned.",
+      "expected_output": "People and project index files are updated with source-backed entries and practical tracking actions.",
+      "files": [
+        "../scratch/generate-metadata/Post-Purpose interview reflections.md",
+        "../scratch/generate-metadata/Audora product direction - pre-meeting preparation.md"
+      ]
+    }
+  ]
+}

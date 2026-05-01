@@ -1,0 +1,57 @@
+{
+  "version": "1.0",
+  "default_output_subdir": "My Outputs/Patterns",
+  "allowed_statuses": [
+    "active",
+    "possible",
+    "resolved",
+    "archived"
+  ],
+  "pattern_files": {
+    "communication_flaws": {
+      "file": "Communication Flaws.md",
+      "title": "Communication Flaws",
+      "description": "Blunt recurring communication problems, blind spots, and failure modes."
+    },
+    "relationship_patterns": {
+      "file": "Relationship Patterns.md",
+      "title": "Relationship Patterns",
+      "description": "Repeated behavior around family, friends, romantic interest, loyalty, attachment, boundaries, and social approval."
+    },
+    "identity_beliefs": {
+      "file": "Identity Beliefs.md",
+      "title": "Identity Beliefs",
+      "description": "Beliefs Rami expresses about who he is, what he is becoming, and what limits or drives him."
+    },
+    "recurring_fears": {
+      "file": "Recurring Fears.md",
+      "title": "Recurring Fears",
+      "description": "Repeated fears, anxieties, dread loops, and threat models."
+    },
+    "decision_principles": {
+      "file": "Decision Principles.md",
+      "title": "Decision Principles",
+      "description": "Reusable decision rules surfaced directly from generated metadata."
+    },
+    "open_problems": {
+      "file": "Open Problems.md",
+      "title": "Open Problems",
+      "description": "Unresolved questions, repeated blockers, and problems still being debugged."
+    },
+    "experiments_to_run": {
+      "file": "Experiments To Run.md",
+      "title": "Experiments To Run",
+      "description": "Concrete tests Rami should run to learn or change behavior."
+    },
+    "people_mentioned": {
+      "file": "People Mentioned.md",
+      "title": "People Mentioned",
+      "description": "People repeatedly mentioned in notes and why they matter."
+    },
+    "projects_mentioned": {
+      "file": "Projects Mentioned.md",
+      "title": "Projects Mentioned",
+      "description": "Projects, companies, products, and ventures mentioned in notes."
+    }
+  }
+}
