@@ -1,5 +1,6 @@
 import os
 import csv
+import json
 import re
 import sys
 from datetime import datetime
@@ -27,6 +28,69 @@ def format_date(date_str):
         return dt.strftime("%Y-%m-%dT%H:%M:%S")
     except (ValueError, TypeError):
         return date_str
+
+def row_value(row, *names):
+    lookup = {str(key).strip().lower(): value for key, value in row.items() if key}
+    for name in names:
+        value = lookup.get(name.lower())
+        if value is not None:
+            return value
+    return ""
+
+def normalize_letterly_tag(value):
+    tag = str(value).strip()
+    if not tag:
+        return ""
+    return tag.removeprefix("#").strip()
+
+def parse_letterly_tags(raw_tags):
+    raw = str(raw_tags or "").strip()
+    if not raw:
+        return []
+
+    candidates = []
+    if raw.startswith("["):
+        try:
+            parsed = json.loads(raw)
+        except json.JSONDecodeError:
+            parsed = None
+
+        if isinstance(parsed, list):
+            for item in parsed:
+                if isinstance(item, dict):
+                    candidates.append(item.get("name") or item.get("title") or item.get("tag") or "")
+                else:
+                    candidates.append(item)
+
+    if not candidates:
+        for separator in [",", ";", "|", "\n"]:
+            if separator in raw:
+                candidates = raw.split(separator)
+                break
+
+    if not candidates:
+        candidates = [part for part in raw.split("#") if part.strip()] if raw.count("#") > 1 else [raw]
+
+    tags = []
+    seen = set()
+    for candidate in candidates:
+        tag = normalize_letterly_tag(candidate)
+        if tag and tag not in seen:
+            tags.append(tag)
+            seen.add(tag)
+    return tags
+
+def yaml_scalar(value):
+    return json.dumps(str(value), ensure_ascii=False)
+
+def yaml_list(field, values):
+    if not values:
+        return f"{field}: []"
+
+    lines = [f"{field}:"]
+    for value in values:
+        lines.append(f"  - {yaml_scalar(value)}")
+    return "\n".join(lines)
 
 def process_letterly_csv(vault_root):
     # Paths
@@ -59,13 +123,14 @@ def process_letterly_csv(vault_root):
     with open(latest_csv_path, mode='r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
         for row in reader:
-            note_type = (row.get('rewrite_type') or "").lower()
+            note_type = (row_value(row, 'rewrite_type') or "").lower()
             if 'magic' not in note_type:
                 continue
 
-            title = row.get('title', '').strip()
-            content = row.get('text', '').strip()
-            created_at_raw = row.get('created_at', '')
+            title = row_value(row, 'title').strip()
+            content = row_value(row, 'text').strip()
+            letterly_tags = parse_letterly_tags(row_value(row, 'tags', 'tag', 'letterly_tags'))
+            created_at_raw = row_value(row, 'created_at')
             iso_date = format_date(created_at_raw)
 
             if not title:
@@ -85,6 +150,7 @@ def process_letterly_csv(vault_root):
 Status: 🎙️
 tags:
   - note
+{yaml_list("letterly_tags", letterly_tags)}
 Links:
 Created: {iso_date}
 ---

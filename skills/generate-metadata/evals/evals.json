@@ -15,6 +15,11 @@
       "id": 3,
       "prompt": "Generate metadata for these notes as a batch: Transcriptions/Realizations on Relationships, Sex, and Loyalty.md and Transcriptions/Sudden Firing and Account Disabling.md. Use wiki-links where helpful and keep the labels blunt.",
       "expected_output": "Both files have valid generated metadata, each with note_types appropriate to the content, direct phrase labels, empty arrays where no signal exists, and preserved original frontmatter."
+    },
+    {
+      "id": 4,
+      "prompt": "Generate metadata for a Letterly note that already has letterly_tags in frontmatter. Use those tags as context, but preserve the letterly_tags field and do not include it in the generated metadata payload.",
+      "expected_output": "The file has valid generated metadata informed by the Letterly tags where supported by the body, while the existing letterly_tags frontmatter remains unchanged."
     }
   ]
 }

@@ -1,7 +1,7 @@
 ---
 name: generate-metadata
-version: 1.1.0
-description: Generate and validate structured frontmatter metadata for markdown transcriptions and spoken notes. Use this skill whenever the user asks to process raw transcriptions, enrich Letterly/voice notes, add Obsidian metadata, classify reflections, extract communication flaws, identify beliefs/fears/problems/takeaways, or prepare notes before moving them from unprocessed to final transcription outputs. This skill is especially important for agent-driven workflows because the agent performs semantic extraction and the bundled Python script performs deterministic merge/validation.
+version: 1.2.0
+description: Generate and validate structured frontmatter metadata for markdown transcriptions and spoken notes. Use this skill whenever the user asks to process raw transcriptions, enrich Letterly/voice notes, use Letterly tags as context, add Obsidian metadata, classify reflections, extract communication flaws, identify beliefs/fears/problems/takeaways, or prepare notes before moving them from unprocessed to final transcription outputs. This skill is especially important for agent-driven workflows because the agent performs semantic extraction and the bundled Python script performs deterministic merge/validation.
 ---
 
 # Generate Metadata
@@ -24,7 +24,7 @@ For each target markdown file, produce valid frontmatter metadata that helps Ram
 - What should Rami actually do differently?
 - Which people, projects, and concepts should be linked in Obsidian?
 
-Preserve existing frontmatter such as `Status`, `tags`, `Links`, and `Created`. Overwrite only the managed metadata fields.
+Preserve existing frontmatter such as `Status`, `tags`, `letterly_tags`, `Links`, and `Created`. Overwrite only the managed metadata fields.
 
 ## Managed Fields
 
@@ -78,9 +78,19 @@ Read the current allowed values from `schema.json` when unsure. Current values:
 
 Use `note_types` as a list. Each note needs at least one value. Use multiple values when the note blends categories.
 
+## Letterly Tags Context
+
+When frontmatter includes `letterly_tags`, treat those values as source context from Letterly. They can clarify the note's intended bucket, such as `journal`, `ideas`, `purpose`, or `chalant`.
+
+Use them as a hint, not as proof. The transcription body remains the source of truth. If a Letterly tag conflicts with the body, follow the body.
+
+Do not copy Letterly tag slugs directly into generated metadata unless they are already natural human-readable phrases. Convert them into useful phrases in generated fields, and only when the note content supports them.
+
+Do not include `letterly_tags` in the JSON payload for this script. The process step writes it, and the merge script preserves it as non-managed frontmatter.
+
 ## How To Read A Note
 
-Treat the main transcription body as the source of truth. Existing `## Connections`, `## Related Notes`, frontmatter, and wiki-links are useful context, but the metadata should describe what Rami actually said in the note.
+Treat the main transcription body as the source of truth. Existing `letterly_tags`, `## Connections`, `## Related Notes`, frontmatter, and wiki-links are useful context, but the metadata should describe what Rami actually said in the note.
 
 When a note rambles across several topics, identify the main job the note is doing. Common jobs in Rami's notes:
 
