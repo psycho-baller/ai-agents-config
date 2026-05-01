@@ -1,7 +1,15 @@
 ---
 name: update-patterns
 version: 1.0.0
-description: Update living Obsidian pattern markdown files from metadata-enriched transcriptions and notes. Use this skill whenever the user asks to populate pattern files, update recurring patterns, synthesize communication flaws, relationship patterns, identity beliefs, recurring fears, decision principles, open problems, experiments, people mentioned, or projects mentioned from generated frontmatter metadata. This skill is agent-driven: the agent decides how entries merge and the bundled Python script performs deterministic markdown upserts.
+description: >-
+  Update living Obsidian pattern markdown files from metadata-enriched
+  transcriptions and notes. Use this skill whenever the user asks to populate
+  pattern files, update recurring patterns, synthesize communication flaws,
+  relationship patterns, identity beliefs, recurring fears, decision principles,
+  open problems, experiments, people mentioned, or projects mentioned from
+  generated frontmatter metadata. This skill is agent-driven: the agent decides
+  how entries merge and the bundled Python script performs deterministic
+  markdown upserts.
 ---
 
 # Update Patterns

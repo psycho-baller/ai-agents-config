@@ -1,7 +1,15 @@
 ---
 name: generate-principles
 version: 1.0.0
-description: Generate evidence-backed personal principles from one markdown note or a batch of markdown notes, especially reflections, transcripts, generated metadata, journal entries, and Obsidian notes. Use this skill whenever the user asks to extract life principles, decision rules, lessons to live by, Ray Dalio-style principles, Atomic Habits-based behavior systems, or practical rules from reflections. This skill is agent-driven: the agent performs semantic extraction and the bundled script renders and validates the structured principles report.
+description: >-
+  Generate evidence-backed personal principles from one markdown note or a
+  batch of markdown notes, especially reflections, transcripts, generated
+  metadata, journal entries, and Obsidian notes. Use this skill whenever the
+  user asks to extract life principles, decision rules, lessons to live by, Ray
+  Dalio-style principles, Atomic Habits-based behavior systems, or practical
+  rules from reflections. This skill is agent-driven: the agent performs
+  semantic extraction and the bundled script renders and validates the
+  structured principles report.
 ---
 
 # Generate Principles
