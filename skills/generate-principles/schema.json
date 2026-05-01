@@ -1,0 +1,68 @@
+{
+  "version": "1.0",
+  "allowed_statuses": [
+    "observed",
+    "candidate",
+    "adopted",
+    "contradicted",
+    "retired"
+  ],
+  "allowed_domains": [
+    "communication",
+    "relationships",
+    "identity",
+    "productivity",
+    "career",
+    "product_entrepreneurship",
+    "life_philosophy",
+    "health_spirituality",
+    "personal_growth"
+  ],
+  "allowed_confidence": [
+    "low",
+    "medium",
+    "high"
+  ],
+  "required_principle_fields": [
+    "title",
+    "status",
+    "domain",
+    "confidence",
+    "principle",
+    "reasoning",
+    "identity",
+    "cue",
+    "craving",
+    "response",
+    "reward",
+    "implementation_intention",
+    "habit_stack",
+    "environment_design",
+    "friction_to_reduce",
+    "friction_to_add",
+    "failure_mode",
+    "experiment",
+    "review_cadence"
+  ],
+  "required_list_fields": [
+    "source_notes",
+    "evidence"
+  ],
+  "score_fields": [
+    "clarity",
+    "evidence",
+    "actionability",
+    "identity_alignment",
+    "habit_design"
+  ],
+  "score_scale": {
+    "min": 1,
+    "max": 5
+  },
+  "score_interpretation": {
+    "21-25": "adopted-ready",
+    "16-20": "strong candidate",
+    "10-15": "needs more evidence or sharper behavior",
+    "0-9": "rewrite or discard"
+  }
+}

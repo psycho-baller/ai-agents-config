@@ -1,0 +1,31 @@
+{
+  "skill_name": "generate-principles",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Read this transcription and generate personal principles with Atomic Habits systems. Put the report in ../scratch/generate-principles/",
+      "expected_output": "A markdown report with source-backed principles, reasoning, Atomic Habits design fields, and a 25-point quality score.",
+      "files": [
+        "../scratch/generate-metadata/Sense of control determines communication performance.md"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Take these relationship and communication notes and extract the principles I should live by. Be blunt and evidence-backed.",
+      "expected_output": "Multiple candidate or adopted principles with source notes, failure modes, experiments, and honest scores.",
+      "files": [
+        "../scratch/generate-metadata/Crush on Lebanese Girl and Unhealthy Expectations.md",
+        "../scratch/generate-metadata/Optimizing Small Talk Interactions.md"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Generate principles from these productivity reflections and show me how to live them through habits.",
+      "expected_output": "Principles focused on productivity and identity, each rendered with cue, response, reward, implementation intention, habit stack, friction design, and review cadence.",
+      "files": [
+        "../scratch/generate-metadata/Overwhelmed by Task Management and Prioritization.md",
+        "../scratch/generate-metadata/Daily Reflections on Productivity and Intentionality.md"
+      ]
+    }
+  ]
+}
