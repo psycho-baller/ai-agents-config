@@ -12,7 +12,7 @@ def get_vault_root():
         "/Users/rami/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian"
     ]
     for c in candidates:
-        if os.path.exists(os.path.join(c, ".nexus/cache.db")) or os.path.exists(os.path.join(c, ".smart-env")):
+        if os.path.exists(os.path.join(c, ".smart-env")):
             return c
     return os.getcwd()
 

@@ -17,8 +17,6 @@ def run_workflow(mode="full"):
     # Use a stable python version
     python_exe = "python3.12"
 
-    # Define paths to sub-skills
-    # Sub-skills reside in ../ai-agents-config/skills
     skills_dir = SKILLS_DIR
     
     export_script = os.path.join(skills_dir, "letterly-export", "scripts", "export.py")
@@ -26,12 +24,9 @@ def run_workflow(mode="full"):
     metadata_script = os.path.join(skills_dir, "generate-metadata", "scripts", "generate_metadata.py")
     link_script = os.path.join(skills_dir, "obsidian-semantic-linker", "scripts", "link_notes.py")
 
-    # Ensure PYTHONPATH is set for sub-processes to find 'utils'
+    # ensure sub-processes can import from utils/ inside skills/
     env = os.environ.copy()
-    root_dir = os.path.dirname(skills_dir) # .agents
-    # Actually 'utils' is in audio-processing/utils
-    project_root = os.path.dirname(root_dir)
-    env["PYTHONPATH"] = project_root + os.pathsep + env.get("PYTHONPATH", "")
+    env["PYTHONPATH"] = skills_dir + os.pathsep + env.get("PYTHONPATH", "")
 
     unprocessed_dir = os.path.join(vault_root, "unprocessed")
     if not os.path.exists(unprocessed_dir):

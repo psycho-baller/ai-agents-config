@@ -13,7 +13,6 @@ from utils.smart_connections import (
     load_note_embeddings,
     normalize,
     cosine_similarity,
-    wait_for_sc_indexing,
 )
 
 SIMILARITY_THRESHOLD = 0.45
@@ -74,27 +73,22 @@ def process_files(embeddings, vault_root, target_dir="unprocessed", target_paths
     return updates
 
 
-def main(vault_root, wait_for_files=None):
+def main(vault_root, target_files=None):
     """
-    vault_root:     path to the Obsidian vault
-    wait_for_files: list of vault-relative paths to wait for SC to index
-                    (e.g. ['unprocessed/My Note.md'])
+    vault_root:   path to the Obsidian vault
+    target_files: list of vault-relative paths to link; links all of unprocessed/ if None
     """
-    if wait_for_files:
-        wait_for_sc_indexing(vault_root, wait_for_files)
-
     try:
         embeddings = load_note_embeddings(vault_root)
     except FileNotFoundError as e:
         print(f"Error: {e}")
         return
 
-    count = process_files(embeddings, vault_root, target_paths=wait_for_files)
+    count = process_files(embeddings, vault_root, target_paths=target_files)
     print(f"Finished. Updated {count} file(s).")
 
 
 if __name__ == "__main__":
     v_root = sys.argv[1] if len(sys.argv) > 1 else get_vault_root()
-    # remaining args are vault-relative paths of new files to wait for indexing
-    files_to_wait = sys.argv[2:] if len(sys.argv) > 2 else None
-    main(v_root, wait_for_files=files_to_wait)
+    files_to_link = sys.argv[2:] if len(sys.argv) > 2 else None
+    main(v_root, target_files=files_to_link)
