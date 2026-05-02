@@ -37,6 +37,23 @@ def row_value(row, *names):
             return value
     return ""
 
+def note_id(row):
+    return row_value(row, 'id', 'note_id', 'noteid', 'note id', 'uuid', 'note_uuid', 'note uuid').strip()
+
+def normalized_title(row):
+    return row_value(row, 'title').strip().casefold()
+
+def is_magic_rewrite(row):
+    rewrite_type = (row_value(row, 'rewrite_type') or "").lower()
+    return 'magic' in rewrite_type
+
+def is_original_note(row):
+    row_type = (row_value(row, 'type') or "").strip().lower()
+    rewrite_type = (row_value(row, 'rewrite_type') or "").strip().lower()
+    if row_type == "note" and not rewrite_type:
+        return True
+    return not row_type and not rewrite_type
+
 def normalize_letterly_tag(value):
     tag = str(value).strip()
     if not tag:
@@ -92,16 +109,45 @@ def yaml_list(field, values):
         lines.append(f"  - {yaml_scalar(value)}")
     return "\n".join(lines)
 
+def build_original_note_indexes(rows):
+    originals_by_id = {}
+    originals_by_title = {}
+
+    for row in rows:
+        if not is_original_note(row):
+            continue
+
+        row_id = note_id(row)
+        if row_id and row_id not in originals_by_id:
+            originals_by_id[row_id] = row
+
+        title = normalized_title(row)
+        if title and title not in originals_by_title:
+            originals_by_title[title] = row
+
+    return originals_by_id, originals_by_title
+
+def find_original_note(row, originals_by_id, originals_by_title):
+    row_id = note_id(row)
+    if row_id and row_id in originals_by_id:
+        return originals_by_id[row_id]
+
+    title = normalized_title(row)
+    if title and title in originals_by_title:
+        return originals_by_title[title]
+
+    return None
+
 def process_letterly_csv(vault_root):
-    # Paths
+    # paths
     unprocessed_dir = os.path.join(vault_root, "unprocessed")
     transcriptions_dir = os.path.join(vault_root, "My Outputs/Transcriptions")
 
-    # Ensure directories exist
+    # ensure directories exist
     os.makedirs(unprocessed_dir, exist_ok=True)
     os.makedirs(transcriptions_dir, exist_ok=True)
 
-    # Find the most recent CSV
+    # find the most recent CSV
     try:
         csv_files = [f for f in os.listdir(unprocessed_dir) if f.endswith(".csv") and f.startswith("Letterly-export")]
     except FileNotFoundError:
@@ -121,32 +167,35 @@ def process_letterly_csv(vault_root):
     count_skipped = 0
 
     with open(latest_csv_path, mode='r', encoding='utf-8') as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            note_type = (row_value(row, 'rewrite_type') or "").lower()
-            if 'magic' not in note_type:
-                continue
+        rows = list(csv.DictReader(f))
 
-            title = row_value(row, 'title').strip()
-            content = row_value(row, 'text').strip()
-            letterly_tags = parse_letterly_tags(row_value(row, 'tags', 'tag', 'letterly_tags'))
-            created_at_raw = row_value(row, 'created_at')
-            iso_date = format_date(created_at_raw)
+    originals_by_id, originals_by_title = build_original_note_indexes(rows)
 
-            if not title:
-                title = " ".join(content.split()[:5]) or "Untitled Note"
+    for row in rows:
+        if not is_magic_rewrite(row):
+            continue
 
-            safe_title = sanitize_filename(title)
-            filename = safe_title + ".md"
+        title = row_value(row, 'title').strip()
+        content = row_value(row, 'text').strip()
+        letterly_tags = parse_letterly_tags(row_value(row, 'tags', 'tag', 'letterly_tags'))
+        original_note = find_original_note(row, originals_by_id, originals_by_title)
+        created_at_raw = row_value(original_note or {}, 'created_at') or row_value(row, 'created_at')
+        iso_date = format_date(created_at_raw)
 
-            unprocessed_file_path = os.path.join(unprocessed_dir, filename)
-            transcriptions_file_path = os.path.join(transcriptions_dir, filename)
+        if not title:
+            title = " ".join(content.split()[:5]) or "Untitled Note"
 
-            if os.path.exists(unprocessed_file_path) or os.path.exists(transcriptions_file_path):
-                count_skipped += 1
-                continue
+        safe_title = sanitize_filename(title)
+        filename = safe_title + ".md"
 
-            note_body = f"""---
+        unprocessed_file_path = os.path.join(unprocessed_dir, filename)
+        transcriptions_file_path = os.path.join(transcriptions_dir, filename)
+
+        if os.path.exists(unprocessed_file_path) or os.path.exists(transcriptions_file_path):
+            count_skipped += 1
+            continue
+
+        note_body = f"""---
 Status: 🎙️
 tags:
   - note
@@ -158,13 +207,13 @@ Created: {iso_date}
 {content}
 """
 
-            try:
-                with open(unprocessed_file_path, 'w', encoding='utf-8') as note_file:
-                    note_file.write(note_body)
-                print(f"Created in unprocessed: {filename}")
-                count_created += 1
-            except Exception as e:
-                print(f"Error creating {filename}: {e}")
+        try:
+            with open(unprocessed_file_path, 'w', encoding='utf-8') as note_file:
+                note_file.write(note_body)
+            print(f"Created in unprocessed: {filename}")
+            count_created += 1
+        except Exception as e:
+            print(f"Error creating {filename}: {e}")
 
     print("Processing complete.")
     print(f"New 'magic' notes created: {count_created}")
